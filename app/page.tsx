@@ -4,7 +4,15 @@ import chase_svg from "@/public/chase-color.svg";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Progress } from "@/components/ui/progress";
+
+export interface Bank {
+  id: number;
+  name: string;
+  logo: string;
+  accounts: Account[];
+}
 
 export interface Account {
   id: number;
@@ -14,6 +22,11 @@ export interface Account {
   balance: number;
   expanded: boolean;
 }
+
+export const banks: Bank[] = [
+  { id: 0, name: "Chase", logo: chase_svg.src, accounts: [] },
+  { id: 1, name: "Wells Fargo", logo: chase_svg.src, accounts: [] },
+];
 
 export const bank_accounts: Account[] = [
   {
@@ -46,11 +59,37 @@ export default function Home() {
     setAccounts(updatedAccounts);
   };
 
+  // Progress words
+  const thresholds = [0, 25, 50, 75, 90, 100];
+  const messages = [
+    "Try harder!",
+    "Keep up the great work!",
+    "You're doing great!",
+    "Almost there! Don't give up now!",
+    "You've made it!",
+  ];
+  const getMessage = (progress: number) => {
+    const index = thresholds.findIndex((threshold) => progress < threshold);
+    return messages[index - 1];
+  };
+
+  // Progress bar
+  const [progress, setProgress] = useState(25);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(progress < 100 ? progress + 1 : 0);
+    }, 500);
+    return () => clearInterval(timer);
+  }, [progress]);
+
   return (
     <>
-      <section className="w-full max-w-6xl bg-green-700 rounded-2xl text-white mx-auto h-52">
-        <div className="p-4">
-          <span className="text-2xl font-bold">Point Tracker</span>
+      <section className="w-full max-w-6xl bg-green-700 rounded-2xl text-white mx-auto h-52 flex flex-col p-4">
+        <span className="text-2xl font-bold">Point Tracker</span>
+        <div className="flex-grow" />
+        <div className="mb-2">
+          <span className="text-xl font-bold">{getMessage(progress)}</span>
+          <Progress value={progress} className="w-full" />
         </div>
       </section>
 
