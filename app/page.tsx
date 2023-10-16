@@ -78,7 +78,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress(progress < 100 ? progress + 1 : 0);
-    }, 500);
+    }, 50);
     return () => clearInterval(timer);
   }, [progress]);
 
@@ -93,7 +93,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-32 space-y-6">
+      <section className="mt-20 flex align-center text-black w-full max-w-6xl mx-auto">
+        <div>
+          <span className="text-2xl font-bold">Accounts</span>
+          <span className="text-xl font-bold"> ({accounts.length})</span>
+        </div>
+        <div className="flex-grow" />
+        <div className="ml-auto">
+          <Button>Link Account</Button>
+          {/* TODO: Add plaid popup here */}
+        </div>
+      </section>
+
+      <section className="mt-4 space-y-6">
         {accounts.map((account) => (
           <div
             key={account.id}

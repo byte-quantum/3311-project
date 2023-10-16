@@ -1,38 +1,41 @@
 "use client";
 import { ReactNode, Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { usePathname } from "next/navigation";
 import {
   Bars3Icon,
   ChartPieIcon,
   HomeIcon,
   XMarkIcon,
   BookOpenIcon,
-  BanknotesIcon,
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Transactions", href: "#", icon: BanknotesIcon, current: false },
-  { name: "Budgeting", href: "#", icon: ChartPieIcon, current: false },
-  { name: "Savings", href: "#", icon: CurrencyDollarIcon, current: false },
+  { name: "Dashboard", href: "/", icon: HomeIcon },
+  { name: "Budgeting", href: "/budgeting", icon: ChartPieIcon },
+  {
+    name: "Savings",
+    href: "/savings",
+    icon: CurrencyDollarIcon,
+  },
   {
     name: "Financial Education",
-    href: "#",
+    href: "/education",
     icon: BookOpenIcon,
-    current: false,
   },
 ];
 
 const teams = [
-  { id: 1, name: "Chase", href: "#", initial: "C", current: false },
-  { id: 2, name: "Wells Fargo", href: "#", initial: "W", current: false },
+  { id: 1, name: "Chase", href: "#", initial: "C" },
+  { id: 2, name: "Wells Fargo", href: "#", initial: "W" },
   {
     id: 3,
-    name: "Fidelity Investments",
+    name: "Fidelity",
     href: "#",
     initial: "F",
-    current: false,
   },
 ];
 
@@ -46,6 +49,8 @@ type SidebarProps = {
 
 export default function Sidebar({ children }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const [session, setSession] = useState(false);
 
   return (
     <>
@@ -118,7 +123,7 @@ export default function Sidebar({ children }: SidebarProps) {
                                 <a
                                   href={item.href}
                                   className={classNames(
-                                    item.current
+                                    item.href === pathname
                                       ? "bg-gray-50 text-green-600"
                                       : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -144,7 +149,7 @@ export default function Sidebar({ children }: SidebarProps) {
                                 <a
                                   href={team.href}
                                   className={classNames(
-                                    team.current
+                                    team.href === pathname
                                       ? "bg-gray-50 text-green-600"
                                       : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -186,7 +191,7 @@ export default function Sidebar({ children }: SidebarProps) {
                         <a
                           href={item.href}
                           className={classNames(
-                            item.current
+                            item.href === pathname
                               ? "bg-gray-50 text-green-600"
                               : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -212,7 +217,7 @@ export default function Sidebar({ children }: SidebarProps) {
                         <a
                           href={team.href}
                           className={classNames(
-                            team.current
+                            team.href === pathname
                               ? "bg-gray-50 text-green-600"
                               : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -228,18 +233,29 @@ export default function Sidebar({ children }: SidebarProps) {
                   </ul>
                 </li>
                 <li className="-mx-6 mt-auto">
-                  <a
-                    href="#"
-                    className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-gray-50 text-slate-900"
-                  >
-                    <img
-                      className="h-8 w-8 rounded-full bg-gray-800"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                    <span className="sr-only">Your profile</span>
-                    <span aria-hidden="true">Nicholas Moreland</span>
-                  </a>
+                  {session ? (
+                    <a
+                      href="#"
+                      className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-gray-50 text-slate-900"
+                    >
+                      <img
+                        className="h-8 w-8 rounded-full bg-gray-800"
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                      <span className="sr-only">Your profile</span>
+                      <span aria-hidden="true">Nicholas Moreland</span>
+                    </a>
+                  ) : (
+                    <div className="flex flex-row space-x-2 p-2">
+                      <Button asChild className="w-full">
+                        <Link href="/signup">Sign up</Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link href="/login">Log in</Link>
+                      </Button>
+                    </div>
+                  )}
                 </li>
               </ul>
             </nav>
