@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 import chase_svg from "@/public/chase-color.svg";
+import robinhood_svg from "@/public/robinhood-color.svg";
 import { ChevronDownIcon, ScaleIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatMoneyUSD } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,10 +49,17 @@ export const bank_accounts: Account[] = [
     acct_number: "8521",
     balance: 1000,
   },
+  {
+    id: 3,
+    bank: "Robinhood",
+    acct_type: "Investment",
+    acct_number: "6701",
+    balance: 2300,
+  },
 ];
 
 export const banks: Bank[] = [
-  /*{
+  {
     id: 0,
     name: "Chase",
     logo: chase_svg.src,
@@ -61,12 +68,11 @@ export const banks: Bank[] = [
   },
   {
     id: 1,
-    name: "Wells Fargo",
-    logo: chase_svg.src,
+    name: "Robinhood",
+    logo: robinhood_svg.src,
     expanded: false,
-    accounts: [],
+    accounts: [bank_accounts[2]],
   },
-  */
 ];
 
 export default function Home() {
@@ -113,7 +119,7 @@ export default function Home() {
   return (
     <>
       <section className="w-full max-w-6xl bg-green-700 rounded-2xl text-white mx-auto h-52 flex flex-col p-4">
-        <span className="text-2xl font-bold">Point Tracker</span>
+        <span className="text-2xl font-bold">Progress Tracker</span>
         <div className="flex-grow" />
         <div className="mb-2">
           <span className="text-xl font-bold">{getMessage(progress)}</span>
@@ -156,7 +162,7 @@ export default function Home() {
                 )}
               >
                 <div className="flex items-center p-4">
-                  <Image src={chase_svg} alt="Chase" width={40} height={40} />
+                  <Image src={bank.logo} alt="Chase" width={40} height={40} />
                   <div className="ml-4">
                     <div className="text-lg font-semibold">{bank.name}</div>
                   </div>
@@ -196,7 +202,7 @@ export default function Home() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <div className="text-lg font-semibold">
-                          ${account.balance}
+                          {formatMoneyUSD(account.balance)}
                         </div>
                         <div>
                           <DropdownMenu>

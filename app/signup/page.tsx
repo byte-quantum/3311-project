@@ -87,7 +87,7 @@ export default function SignupPage() {
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-10 text-center text-sm text-white">
             Already a member?{" "}
             <a
               href="#"
