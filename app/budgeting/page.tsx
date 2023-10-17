@@ -57,7 +57,7 @@ export default function BudgetingPage() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="text-white grid grid-cols-2 gap-4 mt-8 max-w-2xl"
+            className="text-white grid grid-cols-2 gap-4 mt-8 max-w-2xl pb-6"
           >
             <FormField
               control={form.control}
