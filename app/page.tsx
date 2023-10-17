@@ -6,11 +6,23 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
 export interface Bank {
   id: number;
   name: string;
   logo: string;
+  expanded: boolean;
   accounts: Account[];
 }
 
@@ -20,44 +32,59 @@ export interface Account {
   acct_type: string;
   acct_number: string;
   balance: number;
-  expanded: boolean;
 }
-
-export const banks: Bank[] = [
-  { id: 0, name: "Chase", logo: chase_svg.src, accounts: [] },
-  { id: 1, name: "Wells Fargo", logo: chase_svg.src, accounts: [] },
-];
 
 export const bank_accounts: Account[] = [
   {
     id: 1,
     bank: "Chase",
-    acct_type: "Checking",
+    acct_type: "Total Checking",
     acct_number: "1234",
     balance: 1000,
-    expanded: false,
   },
   {
     id: 2,
     bank: "Chase",
-    acct_type: "Checking",
-    acct_number: "1234",
+    acct_type: "Compound Savings",
+    acct_number: "8521",
     balance: 1000,
+  },
+];
+
+export const banks: Bank[] = [
+  {
+    id: 0,
+    name: "Chase",
+    logo: chase_svg.src,
     expanded: false,
+    accounts: [bank_accounts[0], bank_accounts[1]],
+  },
+  {
+    id: 1,
+    name: "Wells Fargo",
+    logo: chase_svg.src,
+    expanded: false,
+    accounts: [],
   },
 ];
 
 export default function Home() {
-  const [accounts, setAccounts] = useState<Account[]>(bank_accounts);
+  const [bankList, setBanks] = useState<Bank[]>(banks);
   const handleExpand = (id: number) => {
-    const updatedAccounts = accounts.map((account) => {
-      if (account.id === id) {
-        return { ...account, expanded: !account.expanded };
+    console.log("Clicked on bank with ID:", id);
+
+    const updateBankList = bankList.map((bank) => {
+      if (bank.id === id) {
+        return { ...bank, expanded: !bank.expanded };
       }
-      return account;
+      return bank;
     });
-    setAccounts(updatedAccounts);
+    setBanks(updateBankList);
   };
+
+  useEffect(() => {
+    console.log("Bank list updated:", bankList);
+  }, [bankList]);
 
   // Progress words
   const thresholds = [0, 25, 50, 75, 90, 100];
@@ -93,10 +120,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 flex align-center text-black w-full max-w-6xl mx-auto">
+      <section className="mt-20 flex align-center text-white w-full max-w-6xl mx-auto">
         <div>
           <span className="text-2xl font-bold">Accounts</span>
-          <span className="text-xl font-bold"> ({accounts.length})</span>
+          <span className="text-xl font-bold"> ({bankList.length})</span>
         </div>
         <div className="flex-grow" />
         <div className="ml-auto">
@@ -106,39 +133,86 @@ export default function Home() {
       </section>
 
       <section className="mt-4 space-y-6">
-        {accounts.map((account) => (
+        {bankList.map((bank) => (
           <div
-            key={account.id}
+            key={bank.id}
             className={cn(
-              account.expanded ? "h-64" : undefined,
-              "w-full max-w-6xl bg-slate-800 rounded-2xl text-white mx-auto"
+              bank.expanded ? "h-full" : undefined,
+              "w-full max-w-6xl bg-slate-900 rounded-2xl text-white mx-auto"
             )}
           >
             <div
               className={cn(
-                account.expanded ? "border-b border-slate-700" : undefined
+                bank.expanded ? "border-b border-slate-800" : undefined
               )}
             >
               <div className="flex items-center p-4">
                 <Image src={chase_svg} alt="Chase" width={40} height={40} />
                 <div className="ml-4">
-                  <div className="text-lg font-semibold">{account.bank}</div>
+                  <div className="text-lg font-semibold">{bank.name}</div>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="ml-auto"
-                  onClick={() => {
-                    handleExpand(account.id);
-                  }}
-                >
-                  {account.expanded ? (
-                    <ChevronDownIcon className="w-6 h-6 transform rotate-180" />
-                  ) : (
-                    <ChevronDownIcon className="w-6 h-6" />
-                  )}
-                </Button>
+                <div className="flex-grow" />
+                <div className="flex items-center space-x-2">
+                  <Badge variant="outline" className="text-white text-sm">
+                    {bank.accounts.length} accounts
+                  </Badge>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="ml-auto hover:bg-slate-800 hover:text-white"
+                    onClick={() => {
+                      handleExpand(bank.id);
+                    }}
+                  >
+                    {bank.expanded ? (
+                      <ChevronDownIcon className="w-6 h-6 transform rotate-180" />
+                    ) : (
+                      <ChevronDownIcon className="w-6 h-6" />
+                    )}
+                  </Button>
+                </div>
               </div>
+            </div>
+            <div>
+              {bank.expanded &&
+                bank.accounts.map((account) => (
+                  <div key={account.id} className="flex items-center p-4">
+                    <div className="flex-grow">
+                      <div className="text-lg font-semibold">
+                        {account.acct_type}
+                      </div>
+                      <div className="text-sm text-slate-300">
+                        {account.acct_number}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="text-lg font-semibold">
+                        ${account.balance}
+                      </div>
+                      <div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="h-8 w-8 p-0 hover:bg-slate-950 hover:text-white"
+                            >
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem className="cursor-pointer">
+                              View Transactions
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Unlink Account</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+                  </div>
+                ))}
             </div>
           </div>
         ))}
