@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { getData } from "@/services/Calls";
+import Context from "@/Context";
 
 export interface Bank {
   id: number;
@@ -15,11 +17,15 @@ export interface Bank {
 }
 
 export interface Account {
-  id: number;
+  account_id: number;
+  balances: {
+    available: number;
+    current: number;
+  };
+  name: string;
   bank: string;
-  acct_type: string;
+  mask: string;
   acct_number: string;
-  balance: number;
   expanded: boolean;
 }
 
@@ -29,29 +35,29 @@ export const banks: Bank[] = [
 ];
 
 export const bank_accounts: Account[] = [
-  {
-    id: 1,
-    bank: "Chase",
-    acct_type: "Checking",
-    acct_number: "1234",
-    balance: 1000,
-    expanded: false,
-  },
-  {
-    id: 2,
-    bank: "Chase",
-    acct_type: "Checking",
-    acct_number: "1234",
-    balance: 1000,
-    expanded: false,
-  },
+  // {
+  //   id: 1,
+  //   bank: "Chase",
+  //   acct_type: "Checking",
+  //   acct_number: "1234",
+  //   balance: 1000,
+  //   expanded: false,
+  // },
+  // {
+  //   id: 2,
+  //   bank: "Chase",
+  //   acct_type: "Checking",
+  //   acct_number: "1234",
+  //   balance: 1000,
+  //   expanded: false,
+  // },
 ];
 
 export default function Home() {
   const [accounts, setAccounts] = useState<Account[]>(bank_accounts);
   const handleExpand = (id: number) => {
     const updatedAccounts = accounts.map((account) => {
-      if (account.id === id) {
+      if (account.account_id === id) {
         return { ...account, expanded: !account.expanded };
       }
       return account;
@@ -82,6 +88,16 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [progress]);
 
+  useEffect(() => {
+    if (Context.linkSuccess) {
+      getData().then((retrievedAccounts) => {
+        if (retrievedAccounts) {
+          setAccounts(retrievedAccounts);
+        }
+      });
+    }
+  }, [Context.linkSuccess]);
+
   return (
     <>
       <section className="w-full max-w-6xl bg-green-700 rounded-2xl text-white mx-auto h-52 flex flex-col p-4">
@@ -96,7 +112,7 @@ export default function Home() {
       <section className="mt-32 space-y-6">
         {accounts.map((account) => (
           <div
-            key={account.id}
+            key={account.account_id}
             className={cn(
               account.expanded ? "h-64" : undefined,
               "w-full max-w-6xl bg-slate-800 rounded-2xl text-white mx-auto"
@@ -110,14 +126,17 @@ export default function Home() {
               <div className="flex items-center p-4">
                 <Image src={chase_svg} alt="Chase" width={40} height={40} />
                 <div className="ml-4">
-                  <div className="text-lg font-semibold">{account.bank}</div>
+                  <div className="text-lg font-semibold">
+                    {account.name}
+                    {account.mask}
+                  </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="ml-auto"
                   onClick={() => {
-                    handleExpand(account.id);
+                    handleExpand(account.account_id);
                   }}
                 >
                   {account.expanded ? (

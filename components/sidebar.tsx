@@ -10,6 +10,8 @@ import {
   BanknotesIcon,
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
+import Context from "@/Context";
+import PlaidLinkButton from "@/services/Link";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
@@ -228,6 +230,15 @@ export default function Sidebar({ children }: SidebarProps) {
                   </ul>
                 </li>
                 <li className="-mx-6 mt-auto">
+                  <a className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-gray-50 text-slate-900">
+                    {!Context.linkSuccess ? (
+                      <>
+                        <PlaidLinkButton />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </a>
                   <a
                     href="#"
                     className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-gray-50 text-slate-900"
