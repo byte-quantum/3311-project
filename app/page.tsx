@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-// import chase_svg from "@/public/chase_svg";
+import chase_logo from "@/public/chase-logo.png";
 // import robinhood_svg from "@/public/robinhood_svg";
 import { ChevronDownIcon, ScaleIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
@@ -19,10 +19,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, PiggyBankIcon } from "lucide-react";
+import PlaidLinkButton from "@/services/Link";
+
+export interface BankLogo {
+  name: string;
+  logo_path: string;
+}
 
 export interface Bank {
   id: number;
   name: string;
+  institute_id: string;
   logo: string;
   expanded: boolean;
   accounts: Account[];
@@ -36,12 +43,24 @@ export interface Account {
   };
   name: string;
   bank: string;
+  bank_id: string;
   mask: string;
   acct_number: string;
   acct_type: string;
   expanded: boolean;
   balance: number;
 }
+
+export const logos: BankLogo[] = [
+  {
+    name: "Chase",
+    logo_path: "/chase-logo.png",
+  },
+  {
+    name: "Wells Fargo",
+    logo_path: "/Wells_Fargo.png",
+  },
+];
 
 export const bank_accounts: Account[] = [
   // {
@@ -85,6 +104,7 @@ export const banks: Bank[] = [
 ];
 
 export default function Home() {
+  const [AccountsList, setAccounts] = useState<Account[]>(bank_accounts);
   const [bankList, setBanks] = useState<Bank[]>(banks);
   const handleExpand = (id: number) => {
     // const updatedAccounts = accounts.map((account) => {
@@ -132,7 +152,33 @@ export default function Home() {
     if (Context.linkSuccess) {
       getData().then((retrievedAccounts) => {
         if (retrievedAccounts) {
-          //setAccounts(retrievedAccounts);
+          console.log("Hey cool");
+          const path = logos.find(
+            (logo) => logo.name === retrievedAccounts[0].bank
+          );
+
+          if (Array.isArray(retrievedAccounts)) {
+            AccountsList.concat(retrievedAccounts);
+          } else {
+            AccountsList.push(retrievedAccounts);
+          }
+          console.log(retrievedAccounts);
+          setAccounts(AccountsList);
+          console.log(AccountsList);
+
+          const myBank: Bank = {
+            id: bankList.length,
+            name: retrievedAccounts[0].bank,
+            institute_id: retrievedAccounts[0].bank_id,
+            logo: path ? path.logo_path : "",
+            expanded: false,
+            accounts: retrievedAccounts,
+          };
+
+          if (logos.some((logo) => logo.name === retrievedAccounts[0].bank)) {
+          }
+          bankList.push(myBank);
+          setBanks(bankList);
         }
       });
     }
@@ -156,8 +202,7 @@ export default function Home() {
         </div>
         <div className="flex-grow" />
         <div className="ml-auto">
-          <Button>Link Account</Button>
-          {/* TODO: Add plaid popup here */}
+          <PlaidLinkButton />
         </div>
       </section>
 
@@ -213,13 +258,16 @@ export default function Home() {
               <div>
                 {bank.expanded &&
                   bank.accounts.map((account) => (
-                    <div key={account.account_id} className="flex items-center p-4">
+                    <div
+                      key={account.account_id}
+                      className="flex items-center p-4"
+                    >
                       <div className="flex-grow">
                         <div className="text-lg font-semibold">
-                          {account.acct_type}
+                          {account.name}
                         </div>
                         <div className="text-sm text-slate-300">
-                          {account.acct_number}
+                          {"..." + account.mask}
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">

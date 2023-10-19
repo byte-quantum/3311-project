@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { PlaidLinkOnSuccessMetadata, usePlaidLink } from "react-plaid-link";
 import Accounts from "./Accounts";
 import Context from "@/Context";
+import { Button } from "@/components/ui/button";
 const PlaidLinkButton = () => {
   const [linkToken, setLinkToken] = useState(null);
   const generateToken = async () => {
@@ -33,6 +34,7 @@ const Link: React.FC<LinkProps> = (props: LinkProps) => {
   const [linkSuccess, setLinkSuccess] = useState(false);
   const onSuccess = React.useCallback(
     async (public_token: string, metadata: PlaidLinkOnSuccessMetadata) => {
+      Context.linkSuccess = false;
       // send public_token to server
       const response = await fetch(
         "http://localhost:8000/api/set_access_token",
@@ -45,6 +47,7 @@ const Link: React.FC<LinkProps> = (props: LinkProps) => {
         }
       );
       const data = await response.json();
+      console.log("Called");
       Context.accessToken = data.access_token;
       Context.linkSuccess = true;
     },
@@ -74,11 +77,9 @@ const Link: React.FC<LinkProps> = (props: LinkProps) => {
   }, [ready, open, isOauth]);
 
   return (
-    <div>
-      <button onClick={() => open()} disabled={!ready}>
-        Link account
-      </button>
-    </div>
+    <Button onClick={() => open()} disabled={!ready}>
+      Link Account
+    </Button>
   );
 };
 export default PlaidLinkButton;

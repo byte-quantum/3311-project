@@ -1,5 +1,6 @@
 interface QuickstartState {
   linkSuccess: boolean;
+  inProgress: boolean;
   isItemAccess: boolean;
   isPaymentInitiation: boolean;
   linkToken: string | null;
@@ -17,6 +18,7 @@ interface QuickstartState {
 
 const initialState: QuickstartState = {
   linkSuccess: false,
+  inProgress: false,
   isItemAccess: true,
   isPaymentInitiation: false,
   linkToken: "", // Don't set to null or error message will show up briefly when site loads
