@@ -1,40 +1,43 @@
 "use client";
 import { ReactNode, Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { usePathname } from "next/navigation";
 import {
   Bars3Icon,
   ChartPieIcon,
   HomeIcon,
   XMarkIcon,
   BookOpenIcon,
-  BanknotesIcon,
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import Context from "@/Context";
 import PlaidLinkButton from "@/services/Link";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Transactions", href: "#", icon: BanknotesIcon, current: false },
-  { name: "Budgeting", href: "#", icon: ChartPieIcon, current: false },
-  { name: "Savings", href: "#", icon: CurrencyDollarIcon, current: false },
+  { name: "Dashboard", href: "/", icon: HomeIcon },
+  { name: "Budgeting", href: "/budgeting", icon: ChartPieIcon },
+  {
+    name: "Savings",
+    href: "/savings",
+    icon: CurrencyDollarIcon,
+  },
   {
     name: "Financial Education",
-    href: "#",
+    href: "/education",
     icon: BookOpenIcon,
-    current: false,
   },
 ];
 
 const teams = [
-  { id: 1, name: "Chase", href: "#", initial: "C", current: false },
-  { id: 2, name: "Wells Fargo", href: "#", initial: "W", current: false },
+  { id: 1, name: "Chase", href: "#", initial: "C" },
+  { id: 2, name: "Wells Fargo", href: "#", initial: "W" },
   {
     id: 3,
-    name: "Fidelity Investments",
+    name: "Fidelity",
     href: "#",
     initial: "F",
-    current: false,
   },
 ];
 
@@ -48,6 +51,8 @@ type SidebarProps = {
 
 export default function Sidebar({ children }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const [session, setSession] = useState(true);
 
   return (
     <>
@@ -105,7 +110,7 @@ export default function Sidebar({ children }: SidebarProps) {
                     </div>
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-2 ring-1 ring-white/10">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-2 ring-1 ring-white/10 bg-slate-950">
                     <div className="flex items-center pt-4">
                       <span className="text-2xl font-bold text-green-700">
                         Dorm Dollars
@@ -120,9 +125,9 @@ export default function Sidebar({ children }: SidebarProps) {
                                 <a
                                   href={item.href}
                                   className={classNames(
-                                    item.current
-                                      ? "bg-gray-50 text-green-600"
-                                      : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
+                                    item.href === pathname
+                                      ? "bg-slate-900 text-green-500"
+                                      : "text-white hover:text-green-500 hover:bg-slate-900",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
@@ -146,13 +151,13 @@ export default function Sidebar({ children }: SidebarProps) {
                                 <a
                                   href={team.href}
                                   className={classNames(
-                                    team.current
-                                      ? "bg-gray-50 text-green-600"
-                                      : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
+                                    team.href === pathname
+                                      ? "bg-slate-900 text-green-500"
+                                      : "text-white hover:text-green-500 hover:bg-slate-900",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
-                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-slate-900">
                                     {team.initial}
                                   </span>
                                   <span className="truncate">{team.name}</span>
@@ -173,7 +178,7 @@ export default function Sidebar({ children }: SidebarProps) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 border-r border-gray-200">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 border-r border-slate-800">
             <div className="flex items-center pt-4">
               <span className="text-2xl font-bold text-green-700">
                 Dorm Dollars
@@ -188,9 +193,9 @@ export default function Sidebar({ children }: SidebarProps) {
                         <a
                           href={item.href}
                           className={classNames(
-                            item.current
-                              ? "bg-gray-50 text-green-600"
-                              : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
+                            item.href === pathname
+                              ? "bg-slate-900 text-green-500"
+                              : "text-white hover:text-green-500 hover:bg-slate-900",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
@@ -214,13 +219,13 @@ export default function Sidebar({ children }: SidebarProps) {
                         <a
                           href={team.href}
                           className={classNames(
-                            team.current
-                              ? "bg-gray-50 text-green-600"
-                              : "text-gray-700 hover:text-green-600 hover:bg-gray-50",
+                            team.href === pathname
+                              ? "bg-slate-900 text-green-500"
+                              : "text-white hover:text-green-500 hover:bg-slate-900",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-slate-900">
                             {team.initial}
                           </span>
                           <span className="truncate">{team.name}</span>
@@ -230,43 +235,47 @@ export default function Sidebar({ children }: SidebarProps) {
                   </ul>
                 </li>
                 <li className="-mx-6 mt-auto">
-                  <a className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-gray-50 text-slate-900">
-                    {!Context.linkSuccess ? (
-                      <>
-                        <PlaidLinkButton />
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-gray-50 text-slate-900"
-                  >
-                    <img
-                      className="h-8 w-8 rounded-full bg-gray-800"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                    <span className="sr-only">Your profile</span>
-                    <span aria-hidden="true">Nicholas Moreland</span>
-                  </a>
+                  {session ? (
+                    <a
+                      href="#"
+                      className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-slate-900 text-slate-900"
+                    >
+                      <img
+                        className="h-8 w-8 rounded-full bg-gray-800"
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                      <span className="sr-only">Your profile</span>
+                      <span aria-hidden="true" className="text-white">
+                        Nicholas Moreland
+                      </span>
+                    </a>
+                  ) : (
+                    <div className="flex flex-row space-x-2 p-2">
+                      <Button asChild className="w-full">
+                        <Link href="/signup">Sign up</Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link href="/login">Log in</Link>
+                      </Button>
+                    </div>
+                  )}
                 </li>
               </ul>
             </nav>
           </div>
         </div>
 
-        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+        <div className="sticky top-0 z-40 flex items-center gap-x-6 px-4 py-4 shadow-sm sm:px-6 lg:hidden border-b border-slate-900">
           <button
             type="button"
-            className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+            className="-m-2.5 p-2.5 text-white lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
+          <div className="flex-1 text-sm font-semibold leading-6 text-white">
             Dashboard
           </div>
           <a href="#">
@@ -279,7 +288,7 @@ export default function Sidebar({ children }: SidebarProps) {
           </a>
         </div>
 
-        <main className="py-10 lg:pl-72 2xl:pl-0 bg-white h-screen">
+        <main className="py-10 lg:pl-72 2xl:pl-0 h-screen">
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
