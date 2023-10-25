@@ -1,3 +1,4 @@
+"use client";
 import fintip from "@/public/financetips.svg";
 import Image from "next/image";
 import { Terminal } from "lucide-react";
@@ -13,13 +14,29 @@ import {
 export default function EducationPage() {
   return (
     <>
-      <div className="w-[1045px] h-[677px] mx-auto relative">  {/* this is a container */}
-        <div className="w-[1045px] h-[677px] bg-white rounded-3xl"> {/* card with infromation */}
-          <h1 className="text-4xl font-bold text-center pt-8">Finance Tips</h1>  {/* Header for the information */}
+      <div className="flex flex-row absolute left-[300px] top-[147px] mx-auto h-auto w-auto gap-x-16 left-500 ">
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative transition ease-in-out duration-700 hover:-translate-y-1 hover:scale-110  ">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
         </div>
-        <div className={`w-[1045px] h-[677px] opacity-100 transiton-opacity ease-out-in duration-700 hover:opacity-0 rounded-3xl absolute top-0 left-0`}> {/*Transition betweet card 2 and card 1*/}
-          <Image src={fintip} alt="Fintip" objectFit="cover" className="rounded-3xl w-[1045px] h-[677px] "/> {/*image to attact the viewer*/}
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative duration-700 hover:-translate-y-1 hover:scale-110">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
         </div>
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative duration-700 hover:-translate-y-1 hover:scale-110">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
+        </div>
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative duration-700 hover:-translate-y-1 hover:scale-110">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
+        </div>
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative duration-700 hover:-translate-y-1 hover:scale-110">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
+        </div>
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative duration-700 hover:-translate-y-1 hover:scale-110">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
+        </div>
+        <div className="mx-auto bg-red-400 w-[1045px] h-[677px] rounded-3xl relative duration-700 hover:-translate-y-1 hover:scale-110">
+          <Image src={fintip} alt="Fintip" layout="fill" objectFit="cover" className="rounded-3xl transiton-opacity ease-out-in duration-700 hover:opacity-0" />
+        </div>
+
       </div>
     </>
   );
