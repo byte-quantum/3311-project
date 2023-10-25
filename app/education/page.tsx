@@ -1,3 +1,5 @@
+import fintip from "@/public/financetips.svg";
+import Image from "next/image";
 import { Terminal } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -7,39 +9,18 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 
+
 export default function EducationPage() {
   return (
     <>
-      <Alert>
-        <Terminal className="h-4 w-4" />
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>
-          This page is a work in progress. It&apos;s not ready yet.
-        </AlertDescription>
-      </Alert>
-
-      <Accordion type="single" collapsible className="w-full mt-4">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Is it styled?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It comes with default styles that matches the other
-            components&apos; aesthetic.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger>Is it animated?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It&apos;s animated by default, but you can disable it if you
-            prefer.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <div className="w-[1045px] h-[677px] mx-auto relative">  {/* this is a container */}
+        <div className="w-[1045px] h-[677px] bg-white rounded-3xl"> {/* card with infromation */}
+          <h1 className="text-4xl font-bold text-center pt-8">Finance Tips</h1>  {/* Header for the information */}
+        </div>
+        <div className={`w-[1045px] h-[677px] opacity-100 transiton-opacity ease-out-in duration-700 hover:opacity-0 rounded-3xl absolute top-0 left-0`}> {/*Transition betweet card 2 and card 1*/}
+          <Image src={fintip} alt="Fintip" objectFit="cover" className="rounded-3xl w-[1045px] h-[677px] "/> {/*image to attact the viewer*/}
+        </div>
+      </div>
     </>
   );
 }

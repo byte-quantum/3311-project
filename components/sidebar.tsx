@@ -50,7 +50,7 @@ type SidebarProps = {
 export default function Sidebar({ children }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const [session, setSession] = useState(false);
+  const [session, setSession] = useState(true);
 
   return (
     <>
@@ -244,7 +244,9 @@ export default function Sidebar({ children }: SidebarProps) {
                         alt=""
                       />
                       <span className="sr-only">Your profile</span>
-                      <span aria-hidden="true">Nicholas Moreland</span>
+                      <span aria-hidden="true" className="text-white">
+                        Nicholas Moreland
+                      </span>
                     </a>
                   ) : (
                     <div className="flex flex-row space-x-2 p-2">

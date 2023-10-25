@@ -74,7 +74,7 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-10 text-center text-sm text-white">
             Not a member?{" "}
             <a
               href="#"
