@@ -85,6 +85,7 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                disabled={loading}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -101,6 +102,7 @@ export default function LoginPage() {
               />
               <FormField
                 control={form.control}
+                disabled={loading}
                 name="password"
                 render={({ field }) => (
                   <FormItem>

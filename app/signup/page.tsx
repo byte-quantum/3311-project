@@ -57,7 +57,6 @@ export default function SignupPage() {
         // TODO: REPLACE LINK WITH ACTUAL LIVE DEPLOYMENT LINK
         const request = await fetch("http://localhost:3000/api/user", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             username: values.username,
             email: values.email,
@@ -97,6 +96,7 @@ export default function SignupPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
+                disabled={loading}
                 name="username"
                 render={({ field }) => (
                   <FormItem>
@@ -113,6 +113,7 @@ export default function SignupPage() {
               />
               <FormField
                 control={form.control}
+                disabled={loading}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
@@ -129,6 +130,7 @@ export default function SignupPage() {
               />
               <FormField
                 control={form.control}
+                disabled={loading}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
@@ -145,6 +147,7 @@ export default function SignupPage() {
               />
               <FormField
                 control={form.control}
+                disabled={loading}
                 name="password_confirmation"
                 render={({ field }) => (
                   <FormItem>
