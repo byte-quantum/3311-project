@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, PiggyBankIcon } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 export interface Bank {
   id: number;
@@ -34,7 +34,7 @@ export interface Account {
   balance: number;
 }
 
-export const bank_accounts: Account[] = [
+const bank_accounts: Account[] = [
   {
     id: 1,
     bank: "Chase",
@@ -58,7 +58,7 @@ export const bank_accounts: Account[] = [
   },
 ];
 
-export const banks: Bank[] = [
+const banks: Bank[] = [
   {
     id: 0,
     name: "Chase",
