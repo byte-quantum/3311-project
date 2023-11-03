@@ -18,6 +18,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -36,6 +37,7 @@ const formSchema = z.object({
 
 export default function SignupPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,19 +52,28 @@ export default function SignupPage() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    setTimeout(async () => {
+      try {
+        // TODO: REPLACE LINK WITH ACTUAL LIVE DEPLOYMENT LINK
+        const request = await fetch("http://localhost:3000/api/user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: values.username,
+            email: values.email,
+            password: values.password,
+          }),
+        });
 
-      toast({
-        title: "You submitted the following values:",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">
-              {JSON.stringify(values, null, 2)}
-            </code>
-          </pre>
-        ),
-      });
+        if (request?.ok) router.push("/");
+      } catch (error) {
+        toast({
+          title: "Oops!",
+          description: "Your request could not be completed at this time.",
+        });
+      } finally {
+        setLoading(false);
+      }
     }, 2000);
   }
 

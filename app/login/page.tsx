@@ -1,7 +1,8 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,51 +19,49 @@ import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
   email: z.string().min(2, {
     message: "Email must be a valid email.",
   }),
   password: z.string().min(2, {
     message: "Password must be at least 2 characters.",
   }),
-  password_confirmation: z.string().min(2, {
-    message: "Password Confirmation must be at least 2 characters.",
-  }),
 });
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
-      password_confirmation: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    setTimeout(async () => {
+      try {
+        const request = await signIn("credentials", {
+          redirect: true,
+          email: values.email,
+          password: values.password,
+        });
 
-      toast({
-        title: "You submitted the following values:",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">
-              {JSON.stringify(values, null, 2)}
-            </code>
-          </pre>
-        ),
-      });
+        if (request?.ok) router.push("/");
+      } catch (error) {
+        toast({
+          title: "Oops!",
+          description: "Your request could not be completed at this time.",
+        });
+      } finally {
+        setLoading(false);
+      }
     }, 2000);
   }
 
