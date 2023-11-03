@@ -50,7 +50,7 @@ type SidebarProps = {
 export default function Sidebar({ children }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const [session, setSession] = useState(true);
+  const [session, setSession] = useState(false);
 
   return (
     <>
@@ -249,12 +249,12 @@ export default function Sidebar({ children }: SidebarProps) {
                       </span>
                     </a>
                   ) : (
-                    <div className="flex flex-row space-x-2 p-2">
-                      <Button asChild className="w-full">
-                        <Link href="/signup">Sign up</Link>
+                    <div className="flex flex-col space-y-2 p-2">
+                      <Button asChild className="w-full" variant="secondary">
+                        <Link href="/login">Sign in</Link>
                       </Button>
-                      <Button asChild className="w-full">
-                        <Link href="/login">Log in</Link>
+                      <Button asChild className="w-full" variant="secondary">
+                        <Link href="/signup">Sign up</Link>
                       </Button>
                     </div>
                   )}

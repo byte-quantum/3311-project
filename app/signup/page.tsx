@@ -1,7 +1,74 @@
+"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { set, useForm } from "react-hook-form";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { Icons } from "@/components/ui/icons";
+import Link from "next/link";
+
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+  email: z.string().min(2, {
+    message: "Email must be a valid email.",
+  }),
+  password: z.string().min(2, {
+    message: "Password must be at least 2 characters.",
+  }),
+  password_confirmation: z.string().min(2, {
+    message: "Password Confirmation must be at least 2 characters.",
+  }),
+});
+
 export default function SignupPage() {
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+
+      toast({
+        title: "You submitted the following values:",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">
+              {JSON.stringify(values, null, 2)}
+            </code>
+          </pre>
+        ),
+      });
+    }, 2000);
+  }
+
   return (
     <>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="flex max-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           {/*
             <img
@@ -9,92 +76,102 @@ export default function SignupPage() {
               src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
               alt="Your Company"
             />*/}
-          <h2 className="mt-16 text-center text-2xl font-bold leading-9 tracking-tight text-white">
+          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-white">
             Create your free account
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-white"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="block w-full rounded-md border-0 px-2 py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-white"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 px-2 first:py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-white"
-                >
-                  Confirm Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 px-2 first:py-1.5 text-white shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your public display name.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your public email address.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">Password</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your private security password.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password_confirmation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">
+                      Password Confirmation
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your private security password confirmation.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                variant="secondary"
+                className="w-full"
+                disabled={loading}
               >
+                {loading && (
+                  <Icons.spinner className="animate-spin mr-2 h-4 w-4" />
+                )}
                 Create account
-              </button>
-            </div>
-          </form>
+              </Button>
+            </form>
+          </Form>
 
           <p className="mt-10 text-center text-sm text-white">
             Already a member?{" "}
-            <a
-              href="#"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            <Link
+              href="/login"
+              className="font-semibold leading-6 text-indigo-500 hover:text-indigo-400"
             >
-              Click here to log in
-            </a>
+              Click here to sign in
+            </Link>
           </p>
         </div>
       </div>
