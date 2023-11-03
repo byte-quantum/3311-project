@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { usePathname } from "next/navigation";
 import {
@@ -12,6 +12,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: HomeIcon },
@@ -39,18 +41,10 @@ const teams = [
   },
 ];
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
-type SidebarProps = {
-  children: ReactNode;
-};
-
-export default function Sidebar({ children }: SidebarProps) {
+export default function Sidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const [session, setSession] = useState(false);
+  const { data: session, status } = useSession();
 
   return (
     <>
@@ -122,7 +116,7 @@ export default function Sidebar({ children }: SidebarProps) {
                               <li key={item.name}>
                                 <a
                                   href={item.href}
-                                  className={classNames(
+                                  className={cn(
                                     item.href === pathname
                                       ? "bg-slate-900 text-green-500"
                                       : "text-white hover:text-green-500 hover:bg-slate-900",
@@ -148,7 +142,7 @@ export default function Sidebar({ children }: SidebarProps) {
                               <li key={team.name}>
                                 <a
                                   href={team.href}
-                                  className={classNames(
+                                  className={cn(
                                     team.href === pathname
                                       ? "bg-slate-900 text-green-500"
                                       : "text-white hover:text-green-500 hover:bg-slate-900",
@@ -190,7 +184,7 @@ export default function Sidebar({ children }: SidebarProps) {
                       <li key={item.name}>
                         <a
                           href={item.href}
-                          className={classNames(
+                          className={cn(
                             item.href === pathname
                               ? "bg-slate-900 text-green-500"
                               : "text-white hover:text-green-500 hover:bg-slate-900",
@@ -216,7 +210,7 @@ export default function Sidebar({ children }: SidebarProps) {
                       <li key={team.name}>
                         <a
                           href={team.href}
-                          className={classNames(
+                          className={cn(
                             team.href === pathname
                               ? "bg-slate-900 text-green-500"
                               : "text-white hover:text-green-500 hover:bg-slate-900",
@@ -233,7 +227,7 @@ export default function Sidebar({ children }: SidebarProps) {
                   </ul>
                 </li>
                 <li className="-mx-6 mt-auto">
-                  {session ? (
+                  {status === "authenticated" ? (
                     <a
                       href="#"
                       className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 hover:bg-slate-900 text-slate-900"
@@ -285,10 +279,6 @@ export default function Sidebar({ children }: SidebarProps) {
             />
           </a>
         </div>
-
-        <main className="py-10 lg:pl-72 2xl:pl-0 h-screen">
-          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
-        </main>
       </div>
     </>
   );
