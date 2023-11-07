@@ -55,11 +55,13 @@ export default function SignupPage() {
 
     setTimeout(async () => {
       try {
-        // TODO: REPLACE LINK WITH ACTUAL LIVE DEPLOYMENT LINK
         const request = await fetch(
           "https://3311-project.vercel.app/api/user",
           {
             method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({
               username: values.username,
               email: values.email,
@@ -69,19 +71,11 @@ export default function SignupPage() {
         );
 
         if (request?.ok) {
-          const req = await signIn("credentials", {
-            redirect: true,
-            email: values.email,
-            password: values.password,
+          toast({
+            title: "Success!",
+            description: "Account created, you can now login.",
           });
-
-          if (req?.ok) {
-            router.push("/");
-            toast({
-              title: "Success!",
-              description: "You are now logged in.",
-            });
-          }
+          router.push("/signin");
         } else {
           toast({
             title: "Oops!",
