@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
+import { ChevronRight } from "lucide-react";
 
 export interface Budget {
   id: number;
@@ -91,7 +92,7 @@ export default function BudgetingDisplay({
       <div className="max-w-4xl mx-auto flex flex-col items-center justify-center">
         <Image src={chart} alt="Chart" width={400} height={400} />
 
-        <div className="flex flex-row items-center space-x-6">
+        <div className="flex flex-row space-x-6">
           <div className="flex flex-col text-white">
             <span className="text-2xl font-medium">Saved budgets</span>
             <span>Click on any saved budget below to view and edit.</span>
@@ -103,9 +104,17 @@ export default function BudgetingDisplay({
                   <div key={budget.id}>
                     <Button
                       variant="outline"
-                      className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white"
+                      className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row"
                     >
                       {budget.name}
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="bg-slate-950 border-slate-950 hover:border-slate-800 hover:bg-slate-900 hover:text-white"
+                        asChild
+                      >
+                        <ChevronRight className="h-6 w-6 ml-auto" />
+                      </Button>
                     </Button>
                   </div>
                 ))}
