@@ -17,9 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
-import { useSession } from "next-auth/react";
 
-interface Budget {
+export interface Budget {
   id: number;
   name: string;
   income: number;
