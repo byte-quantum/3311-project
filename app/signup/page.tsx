@@ -53,7 +53,6 @@ export default function SignupPage() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const hashed = await hash(values.password, 12);
 
     setTimeout(async () => {
       try {
@@ -67,7 +66,7 @@ export default function SignupPage() {
             body: JSON.stringify({
               username: values.username,
               email: values.email,
-              password: hashed,
+              password: values.password,
             }),
           }
         );
