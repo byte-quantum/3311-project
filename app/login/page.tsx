@@ -58,6 +58,7 @@ export default function LoginPage() {
             title: "Success!",
             description: "You are now logged in.",
           });
+          router.push("/");
         }
       } catch (error) {
         toast({

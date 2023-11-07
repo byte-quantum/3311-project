@@ -47,10 +47,6 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    console.log("Session:", session);
-  }, [session]);
-
   return (
     <>
       <div>

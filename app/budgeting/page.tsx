@@ -1,4 +1,5 @@
 import BudgetingDisplay from "./display";
+import { getUserSession } from "@/lib/auth";
 
 async function getBudgets() {
   const request = await fetch("http://3311-project.vercel.app/api/budgets", {
@@ -13,5 +14,6 @@ async function getBudgets() {
 
 export default async function BudgetingPage() {
   const budgets = await getBudgets();
-  return <BudgetingDisplay budgets={budgets} />;
+  const user = await getUserSession();
+  return <BudgetingDisplay userId={user.id} budgets={budgets} />;
 }
