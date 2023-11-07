@@ -1,3 +1,4 @@
+"use client";
 import chart from "@/public/doughnut_chart.png";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
