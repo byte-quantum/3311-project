@@ -12,6 +12,8 @@ import {
   ChevronUpIcon,
   ChevronDownIcon,
 } from "@heroicons/react/24/outline";
+import Context from "@/Context";
+import PlaidLinkButton from "@/services/Link";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
