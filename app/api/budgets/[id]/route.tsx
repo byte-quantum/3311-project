@@ -9,7 +9,7 @@ export async function GET(
 
   const entry = await prisma.budget.findMany({
     where: {
-      id: id,
+      userId: id,
     },
   });
   return NextResponse.json(entry);
