@@ -76,7 +76,7 @@ export default function SignupPage() {
             title: "Success!",
             description: "Account created, you can now login.",
           });
-          router.push("/signup");
+          router.push("/login");
         } else {
           toast({
             title: "Oops!",
