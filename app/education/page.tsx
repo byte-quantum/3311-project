@@ -135,18 +135,18 @@ export default function EducationPage() {
           looking to manage their finances effectively. In this approach, you
           allocate your income into three main categories. First, 50% of your
           income goes toward essential expenses, such as tuition, rent,
-          groceries, and utilities. This ensures that you're covering your basic
-          needs and obligations. Next, allocate 30% of your income to
+          groceries, and utilities. This ensures that you%apos;re covering your
+          basic needs and obligations. Next, allocate 30% of your income to
           discretionary spending, which includes non-essential expenses like
-          dining out, entertainment, and shopping. It's essential to strike a
-          balance here, as this category allows you to enjoy your college
+          dining out, entertainment, and shopping. It%apos;s essential to strike
+          a balance here, as this category allows you to enjoy your college
           experience without overspending. Finally, reserve 20% of your income
           for savings and financial goals. This part can be challenging for
-          students, but it's crucial for building a financial cushion, paying
-          off debt, and planning for the future. By following the 50-30-20 rule,
-          college students can establish good financial habits, stay on top of
-          their expenses, and work toward their financial goals, all while
-          enjoying their time in school.
+          students, but it%apos;s crucial for building a financial cushion,
+          paying off debt, and planning for the future. By following the
+          50-30-20 rule, college students can establish good financial habits,
+          stay on top of their expenses, and work toward their financial goals,
+          all while enjoying their time in school.
         </p>
         <Image
           src={Fintip1}
@@ -170,22 +170,23 @@ export default function EducationPage() {
           style={{ margin: "1in", color: "white" }}
         >
           Choosing the right bank and opening a student account is an important
-          financial decision for college students. When selecting a bank, it's
-          crucial to consider factors like location, accessibility, fees, and
-          account features. Look for a bank with branches and ATMs conveniently
-          located near your school or residence to avoid out-of-network ATM
-          fees. Many banks offer special student checking or savings accounts
-          with reduced or waived fees, which can be particularly advantageous
-          for students on a budget. Additionally, consider the features and
-          benefits the bank offers, such as mobile banking, online account
-          management, and the availability of budgeting tools. When opening a
-          student account, you'll typically need to provide identification,
-          proof of enrollment, and, in some cases, a small initial deposit.
-          Ensure that you understand the terms and conditions of your chosen
-          student account, including any minimum balance requirements, fees, and
-          overdraft policies. A well-chosen student account can help you manage
-          your finances effectively, access your money easily, and build a
-          foundation for future financial success.
+          financial decision for college students. When selecting a bank,
+          it%apos;s crucial to consider factors like location, accessibility,
+          fees, and account features. Look for a bank with branches and ATMs
+          conveniently located near your school or residence to avoid
+          out-of-network ATM fees. Many banks offer special student checking or
+          savings accounts with reduced or waived fees, which can be
+          particularly advantageous for students on a budget. Additionally,
+          consider the features and benefits the bank offers, such as mobile
+          banking, online account management, and the availability of budgeting
+          tools. When opening a student account, you%apos;ll typically need to
+          provide identification, proof of enrollment, and, in some cases, a
+          small initial deposit. Ensure that you understand the terms and
+          conditions of your chosen student account, including any minimum
+          balance requirements, fees, and overdraft policies. A well-chosen
+          student account can help you manage your finances effectively, access
+          your money easily, and build a foundation for future financial
+          success.
         </p>
         <Image
           src={Fintip2}
@@ -251,21 +252,21 @@ export default function EducationPage() {
         >
           Building good credit while in school is an essential financial
           objective that can significantly impact your long-term financial
-          well-being. To accomplish this, it's advisable to obtain a student
-          credit card tailored to your needs or, if eligible, become an
-          authorized user on a family member's credit card to establish your
-          credit history. Practice responsible credit usage by making small,
-          necessary purchases and consistently paying your bills on time, as
-          payment history plays a vital role in your credit score. Furthermore,
-          maintain low credit card balances and aim to keep your credit
-          utilization ratio under 30% to demonstrate prudent credit management.
-          To stay on track, establish a budget that ensures you can pay off your
-          credit card balance in full each month, thus avoiding the accumulation
-          of interest and debt. Regularly monitor your credit report to verify
-          its accuracy and track your credit-building progress. Patience is key,
-          as building good credit is a gradual process, but it sets the stage
-          for future financial opportunities, such as access to better credit
-          cards and favorable loan terms.
+          well-being. To accomplish this, it%apos;s advisable to obtain a
+          student credit card tailored to your needs or, if eligible, become an
+          authorized user on a family member%apos;s credit card to establish
+          your credit history. Practice responsible credit usage by making
+          small, necessary purchases and consistently paying your bills on time,
+          as payment history plays a vital role in your credit score.
+          Furthermore, maintain low credit card balances and aim to keep your
+          credit utilization ratio under 30% to demonstrate prudent credit
+          management. To stay on track, establish a budget that ensures you can
+          pay off your credit card balance in full each month, thus avoiding the
+          accumulation of interest and debt. Regularly monitor your credit
+          report to verify its accuracy and track your credit-building progress.
+          Patience is key, as building good credit is a gradual process, but it
+          sets the stage for future financial opportunities, such as access to
+          better credit cards and favorable loan terms.
         </p>
         <Image
           src={Fintip4}
@@ -333,17 +334,17 @@ export default function EducationPage() {
           Building an emergency fund as a student is a smart financial move that
           can provide a safety net during unexpected financial challenges. To
           achieve this, allocate a portion of your income to a dedicated savings
-          account regularly, even if it's a modest amount. You can automate this
-          process to make it easier and more consistent. Reducing unnecessary
-          expenses by budgeting wisely, finding affordable alternatives for
-          entertainment, and controlling impulse purchases can free up extra
-          funds for your emergency fund. The importance of an emergency fund
-          lies in its ability to shield you from the financial setbacks that
-          college life can bring, such as medical expenses, car repairs, or
-          unexpected bills. It provides peace of mind, ensures that you won't
-          need to rely on credit cards or loans during emergencies, and sets the
-          foundation for good financial habits that will serve you well beyond
-          your student years.
+          account regularly, even if it%apos;s a modest amount. You can automate
+          this process to make it easier and more consistent. Reducing
+          unnecessary expenses by budgeting wisely, finding affordable
+          alternatives for entertainment, and controlling impulse purchases can
+          free up extra funds for your emergency fund. The importance of an
+          emergency fund lies in its ability to shield you from the financial
+          setbacks that college life can bring, such as medical expenses, car
+          repairs, or unexpected bills. It provides peace of mind, ensures that
+          you won%apos;t need to rely on credit cards or loans during
+          emergencies, and sets the foundation for good financial habits that
+          will serve you well beyond your student years.
         </p>
         <Image
           src={Fintip6}
@@ -376,10 +377,10 @@ export default function EducationPage() {
           (FAFSA), which is the gateway to federal, state, and institutional
           aid. Additionally, they can explore numerous scholarship databases and
           grant opportunities through websites like Fastweb, Scholarships.com,
-          and their college or university's financial aid office. Local
+          and their college or university%apos;s financial aid office. Local
           community organizations, foundations, and employers may also offer
-          scholarships and grants. It's crucial to thoroughly research and meet
-          application deadlines, as the competition for these funds can be
+          scholarships and grants. It%apos;s crucial to thoroughly research and
+          meet application deadlines, as the competition for these funds can be
           fierce. By diligently seeking and applying for scholarships and
           grants, students can reduce the financial burden of their education
           and make their academic aspirations more affordable and attainable.
