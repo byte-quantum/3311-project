@@ -7,7 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatMoneyUSD(amount: number) {
   if (typeof amount !== "number") {
-    console.log(typeof amount);
     throw new Error("Invalid input. Please provide a valid number.");
   }
 
