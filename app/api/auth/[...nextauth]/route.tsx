@@ -40,7 +40,7 @@ const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           image: user.image,
-          name: user.name,
+          username: user.username,
         };
       },
     }),
