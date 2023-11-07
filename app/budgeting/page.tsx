@@ -1,7 +1,7 @@
 import BudgetingDisplay from "./display";
 
 async function getBudgets() {
-  const request = await fetch("http://3311-project.vercel.app/api/budget", {
+  const request = await fetch("http://3311-project.vercel.app/api/budgets", {
     cache: "no-cache",
   });
 
