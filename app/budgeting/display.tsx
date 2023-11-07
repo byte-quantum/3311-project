@@ -60,6 +60,9 @@ export default function BudgetingDisplay({
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const request = await fetch("https://3311-project.vercel.app/api/budgets", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         name: data.name,
         income: data.income,

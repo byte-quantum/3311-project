@@ -2,8 +2,15 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 // Fetch Budgets (/api/budgets/)
-export async function GET(request: Request) {
-  const budgets = await prisma.budget.findMany();
+export async function GET(
+  request: Request,
+  { params }: { params: { userId: string } }
+) {
+  const budgets = await prisma.budget.findMany({
+    where: {
+      userId: params.userId,
+    },
+  });
   return NextResponse.json(budgets);
 }
 
