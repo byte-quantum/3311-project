@@ -48,22 +48,28 @@ export default function LoginPage() {
     setTimeout(async () => {
       try {
         const request = await signIn("credentials", {
-          redirect: true,
+          redirect: false,
           email: values.email,
           password: values.password,
         });
+        console.log(request);
 
         if (request?.ok) {
+          router.push("/");
           toast({
             title: "Success!",
             description: "You are now logged in.",
           });
-          router.push("/");
+        } else {
+          toast({
+            title: "Oops!",
+            description: "Your credentials are not valid.",
+          });
         }
       } catch (error) {
         toast({
           title: "Oops!",
-          description: "Your request could not be completed at this time.",
+          description: "Something went wrong.",
         });
       } finally {
         setLoading(false);
