@@ -19,6 +19,7 @@ import { useState } from "react";
 import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -67,7 +68,27 @@ export default function SignupPage() {
           }
         );
 
-        if (request?.ok) router.push("/");
+        if (request?.ok) {
+          const req = await signIn("credentials", {
+            redirect: true,
+            email: values.email,
+            password: values.password,
+          });
+
+          if (req?.ok) {
+            router.push("/");
+            toast({
+              title: "Success!",
+              description: "You are now logged in.",
+            });
+          }
+        } else {
+          toast({
+            title: "Oops!",
+            description:
+              "Your signup request could not be completed at this time.",
+          });
+        }
       } catch (error) {
         toast({
           title: "Oops!",

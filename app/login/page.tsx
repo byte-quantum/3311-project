@@ -53,7 +53,18 @@ export default function LoginPage() {
           password: values.password,
         });
 
-        if (request?.ok) router.push("/");
+        if (request?.ok) {
+          router.push("/");
+          toast({
+            title: "Success!",
+            description: "You are now logged in.",
+          });
+        } else {
+          toast({
+            title: "Oops!",
+            description: "Your login credentials were incorrect.",
+          });
+        }
       } catch (error) {
         toast({
           title: "Oops!",
