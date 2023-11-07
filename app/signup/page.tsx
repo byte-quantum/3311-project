@@ -20,6 +20,7 @@ import { Icons } from "@/components/ui/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { hash } from "bcrypt";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -50,8 +51,9 @@ export default function SignupPage() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
+    const hashed = await hash(values.password, 12);
 
     setTimeout(async () => {
       try {
@@ -65,7 +67,7 @@ export default function SignupPage() {
             body: JSON.stringify({
               username: values.username,
               email: values.email,
-              password: values.password,
+              password: hashed,
             }),
           }
         );
