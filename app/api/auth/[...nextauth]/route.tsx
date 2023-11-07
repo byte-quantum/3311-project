@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
-//import { compare } from "bcrypt";
+import { compare } from "bcrypt";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
   },
@@ -33,14 +33,15 @@ export const authOptions: NextAuthOptions = {
         if (!user) return null;
 
         //const isValid = await compare(credentials.password, user.password);
+        const isValid = credentials.password === user.password;
 
-        //if (!isValid) return null;
+        if (!isValid) return null;
 
         return {
           id: user.id,
           email: user.email,
           image: user.image,
-          name: user.name,
+          username: user.username,
         };
       },
     }),
@@ -52,9 +53,7 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: token.id,
-          role: token.role,
-          cart: token.cart,
-          cartId: token.cartId,
+          username: token.username,
         },
       };
     },
@@ -72,6 +71,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           id: us.id,
           image: us.image,
+          username: us.username,
         };
       }
       return token;

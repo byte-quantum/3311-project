@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, PiggyBankIcon } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 export interface Bank {
   id: number;
@@ -34,46 +34,9 @@ export interface Account {
   balance: number;
 }
 
-export const bank_accounts: Account[] = [
-  {
-    id: 1,
-    bank: "Chase",
-    acct_type: "Total Checking",
-    acct_number: "1234",
-    balance: 1000,
-  },
-  {
-    id: 2,
-    bank: "Chase",
-    acct_type: "Compound Savings",
-    acct_number: "8521",
-    balance: 1000,
-  },
-  {
-    id: 3,
-    bank: "Robinhood",
-    acct_type: "Investment",
-    acct_number: "6701",
-    balance: 2300,
-  },
-];
+const bank_accounts: Account[] = [];
 
-export const banks: Bank[] = [
-  {
-    id: 0,
-    name: "Chase",
-    logo: chase_svg.src,
-    expanded: false,
-    accounts: [bank_accounts[0], bank_accounts[1]],
-  },
-  {
-    id: 1,
-    name: "Robinhood",
-    logo: robinhood_svg.src,
-    expanded: false,
-    accounts: [bank_accounts[2]],
-  },
-];
+const banks: Bank[] = [];
 
 export default function Home() {
   const [bankList, setBanks] = useState<Bank[]>(banks);
