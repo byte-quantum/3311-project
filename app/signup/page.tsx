@@ -55,14 +55,17 @@ export default function SignupPage() {
     setTimeout(async () => {
       try {
         // TODO: REPLACE LINK WITH ACTUAL LIVE DEPLOYMENT LINK
-        const request = await fetch("http://localhost:3000/api/user", {
-          method: "POST",
-          body: JSON.stringify({
-            username: values.username,
-            email: values.email,
-            password: values.password,
-          }),
-        });
+        const request = await fetch(
+          "https://3311-project.vercel.app/api/user",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              username: values.username,
+              email: values.email,
+              password: values.password,
+            }),
+          }
+        );
 
         if (request?.ok) router.push("/");
       } catch (error) {
