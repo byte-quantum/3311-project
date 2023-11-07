@@ -1,4 +1,25 @@
-import { Account } from "@/app/page";
+import { Account, Transaction } from "@/app/page";
+
+async function filterTransactionProperties(
+  transaction: any
+): Promise<Transaction | undefined> {
+  const result = await getBankData();
+  console.log(result);
+  if (result) {
+    console.log(result.institution_id);
+    return {
+      account_id: transaction.account_id,
+      amount: transaction.amount,
+      category: transaction.category,
+      name: transaction.name,
+      merchant_name: transaction.merchant_name,
+      logo_url: transaction.logo_url,
+      date: transaction.date,
+    };
+  } else {
+    console.log("Failed to get transaction data");
+  }
+}
 
 async function filterAccountProperties(
   account: any
@@ -56,4 +77,26 @@ export async function getData(): Promise<Account[]> {
 
   console.log(resolvedBankAccounts);
   return resolvedBankAccounts;
+}
+
+export async function getTransactionData(): Promise<Transaction[]> {
+  const response = await fetch(`http://localhost:8000/api/transactions/`, {
+    method: "GET",
+  });
+  const data = await response.json();
+  if (data.error != null) {
+    console.log("Failed to get Transaction");
+  }
+  console.log(data);
+
+  const transaction_history: Transaction[] = data.latest_transactions.map(
+    filterTransactionProperties
+  );
+  const resolvedTransactionHistory: Transaction[] = await Promise.all(
+    transaction_history
+  );
+
+  console.log(resolvedTransactionHistory);
+
+  return resolvedTransactionHistory;
 }

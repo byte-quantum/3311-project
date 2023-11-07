@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, PiggyBankIcon } from "lucide-react";
 import PlaidLinkButton from "@/services/Link";
+import DisplayTransactions from "@/components/ui/transaction";
 
 export interface BankLogo {
   name: string;
@@ -36,7 +37,7 @@ export interface Bank {
 }
 
 export interface Account {
-  account_id: number;
+  account_id: string;
   balances: {
     available: number;
     current: number;
@@ -49,6 +50,16 @@ export interface Account {
   acct_type: string;
   expanded: boolean;
   balance: number;
+}
+
+export interface Transaction {
+  account_id: string;
+  amount: number;
+  category: string[];
+  name: string;
+  merchant_name: string;
+  logo_url: string;
+  date: string;
 }
 
 export const logos: BankLogo[] = [
@@ -104,6 +115,7 @@ export const banks: Bank[] = [
 ];
 
 export default function Home() {
+  const [showTransactions, setShowTransactions] = useState(false);
   const [AccountsList, setAccounts] = useState<Account[]>(bank_accounts);
   const [bankList, setBanks] = useState<Bank[]>(banks);
   const handleExpand = (id: number) => {
@@ -148,11 +160,11 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [progress]);
 
+  // Retrieve Bank account info
   useEffect(() => {
     if (Context.linkSuccess) {
       getData().then((retrievedAccounts) => {
         if (retrievedAccounts) {
-          console.log("Hey cool");
           const path = logos.find(
             (logo) => logo.name === retrievedAccounts[0].bank
           );
@@ -175,8 +187,8 @@ export default function Home() {
             accounts: retrievedAccounts,
           };
 
-          if (logos.some((logo) => logo.name === retrievedAccounts[0].bank)) {
-          }
+          // if (logos.some((logo) => logo.name === retrievedAccounts[0].bank)) {
+          // }
           bankList.push(myBank);
           setBanks(bankList);
         }
@@ -287,7 +299,12 @@ export default function Home() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem className="cursor-pointer">
+                              <DropdownMenuItem
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  setShowTransactions(true);
+                                }}
+                              >
                                 View Transactions
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
