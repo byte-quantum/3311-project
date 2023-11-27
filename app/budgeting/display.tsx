@@ -2,7 +2,7 @@
 import chart from "@/public/doughnut_chart.png";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 
@@ -68,6 +68,12 @@ export default function BudgetingDisplay({
 
   const [chartData, setChartData] = useState([0, 0, 0]);
   const [chartLabels, setChartLabels] = useState(['', '', '']);
+  //Add a flag for submited
+  const [submitted, setSubmitted] = useState(false);
+  //Add a flag for chartData
+  const [chartDataFlag, setChartDataFlag] = useState(false);
+  //set title
+  const [title, setTitle] = useState('');
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const request = await fetch("http://localhost:3000/api/budgets", {
       method: "POST",
@@ -85,8 +91,10 @@ export default function BudgetingDisplay({
     });
     if (request.ok) {
       const newChartData = [Number(data.housing), Number(data.food), Number(data.phone)];
+      setSubmitted(true);
       setChartData(newChartData);
       setChartLabels(['Housing', 'Food', 'Phone']);
+      setTitle(data.name);
       sessionStorage.setItem("chartData", JSON.stringify(newChartData));
       refreshBudgets();
       toast({
@@ -129,45 +137,56 @@ export default function BudgetingDisplay({
   return (
     <>
       <div className="max-w-4xl mx-auto flex flex-col items-center justify-center" >
-      <Doughnut 
-          className="max-w-2xl"
-          data={{
-            labels: chartLabels,
-            datasets: [
-              {
-                
-                label: 'Budget',
-                data: chartData,
-                backgroundColor: [
-                  'rgb(255, 99, 132)',
-                  'rgb(255, 205, 86)',
-                  'rgb(54, 162, 235)',
-                ],
-                hoverOffset: 100, 
+          <Doughnut 
+            className="max-w-2xl"
+            data={{
+              labels: chartLabels,
+              datasets: [
+                {
+                  label: 'Budget',
+                  data: chartData,
+                  backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 205, 86)',
+                    'rgb(54, 162, 235)',
+                  ],
+                  hoverOffset: 100,
+                },
+              ],
+            }}
+            options={{
+              layout: {
+                padding: {
+                  left: 100,
+                },
               },
-            ],
-          }}
-          options={{
-            layout: {
-              padding:{  
-                left: 100,  
-              } 
-            },
-            plugins: {
-              legend: {
-                position: 'right',// Change the position of the legends here (e.g., 'top', 'bottom', 'left')
-                labels:{
-                  padding: 50,
-                  usePointStyle: true,
+              plugins: {
+                title:{
+                  display:true,
+                  text: title,
+                  color: 'white',
                   font: {
                     size: 14,
                     weight: 'bold',
+                    
                   },
-                }, 
+  
+                },
+                legend: {
+                  display: submitted || chartDataFlag,
+                  position: 'right', // Change the position of the legends here (e.g., 'top', 'bottom', 'left')
+                  labels: {
+                    padding: 50,
+                    usePointStyle: true,
+                    font: {
+                      size: 14,
+                      weight: 'bold',
+                    },
+                  },
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
         <div className="flex flex-row mx-auto mt-4 gap-x-20"> {/* Add margin-top */}
           <div className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
             <span className="text-2xl font-medium">Saved budgets</span>
@@ -184,6 +203,7 @@ export default function BudgetingDisplay({
                       onClick={() => {
                         handleButtonClick([budget.housing, budget.food, budget.phone]);
                         setChartLabels(['Housing', 'Food', 'Phone']);
+                        setChartDataFlag(true);
                       }}
                     >
                       {budget.name}
