@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+
 import {
   Form,
   FormControl,
@@ -18,6 +19,11 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
 import { ChevronRight } from "lucide-react";
+import {Doughnut} from 'react-chartjs-2';
+import { useState, useEffect } from 'react';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export interface Budget {
   id: number;
@@ -57,8 +63,11 @@ export default function BudgetingDisplay({
     resolver: zodResolver(FormSchema),
   });
 
+  const [chartData, setChartData] = useState( [0, 0, 0]);
+
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const request = await fetch("https://3311-project.vercel.app/api/budgets", {
+    const request = await fetch("http://localhost:3000/api/budgets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,6 +83,9 @@ export default function BudgetingDisplay({
     });
 
     if (request.ok) {
+      const newChartData = [Number(data.housing), Number(data.food), Number(data.phone)];
+      setChartData(newChartData);
+      sessionStorage.setItem("chartData", JSON.stringify(newChartData));
       refreshBudgets();
       toast({
         title: "Success!",
@@ -87,12 +99,35 @@ export default function BudgetingDisplay({
     }
   }
 
+  const handleButtonClick = (budgetData:number[]) => {
+    setChartData(budgetData);
+  };
+
   return (
     <>
-      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center">
-        <Image src={chart} alt="Chart" width={400} height={400} />
+      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center p-50" >
+      <Doughnut 
+          className="max-w-2xl aspect-square"
+          data={{
+            labels: ['Housing', 'Food', 'Phone'],
+            datasets: [
+              {
+                
+                label: 'Budget',
+                data: chartData,
+                backgroundColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(255, 205, 86)',
+                  'rgb(54, 162, 235)',
+                ],
+                hoverOffset: 35,
+                
+              },
+            ],
 
-        <div className="flex flex-row space-x-6">
+          }}
+        />
+        <div className="flex flex-row space-x-6 mt-4"> {/* Add margin-top */}
           <div className="flex flex-col text-white">
             <span className="text-2xl font-medium">Saved budgets</span>
             <span>Click on any saved budget below to view and edit.</span>
@@ -105,6 +140,7 @@ export default function BudgetingDisplay({
                     <Button
                       variant="outline"
                       className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row"
+                      onClick={() => handleButtonClick([budget.housing, budget.food, budget.phone])}
                     >
                       {budget.name}
                       <Button
@@ -116,10 +152,15 @@ export default function BudgetingDisplay({
                         <ChevronRight className="h-6 w-6 ml-auto" />
                       </Button>
                     </Button>
+                    
                   </div>
                 ))}
               </div>
             )}
+
+
+
+            
           </div>
           <Form {...form}>
             <form
