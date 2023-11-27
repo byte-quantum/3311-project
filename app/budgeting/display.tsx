@@ -23,6 +23,7 @@ import { Minus } from "lucide-react";
 import {Doughnut} from 'react-chartjs-2';
 import { useState, useEffect } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { init } from "next/dist/compiled/webpack/webpack";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -55,17 +56,18 @@ const FormSchema = z.object({
 
 export default function BudgetingDisplay({
   userId,
-  budgets,
+  budgets: initBudgets,
 }: {
   userId: string;
   budgets: Budget[];
 }) {
+  const [budgets, setBudgets] = useState<Budget[]>(initBudgets);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
   const [chartData, setChartData] = useState([0, 0, 0]);
-
+  const [chartLabels, setChartLabels] = useState(['', '', '']);
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const request = await fetch("http://localhost:3000/api/budgets", {
       method: "POST",
@@ -81,10 +83,10 @@ export default function BudgetingDisplay({
         userId: userId,
       }),
     });
-
     if (request.ok) {
       const newChartData = [Number(data.housing), Number(data.food), Number(data.phone)];
       setChartData(newChartData);
+      setChartLabels(['Housing', 'Food', 'Phone']);
       sessionStorage.setItem("chartData", JSON.stringify(newChartData));
       refreshBudgets();
       toast({
@@ -103,13 +105,10 @@ export default function BudgetingDisplay({
   const handleButtonClick = (budgetData:number[]) => {
     setChartData(budgetData);
   };
-
-  const deleteBudget = async (budgetId: number) => {
-    const request = await fetch(`http://localhost:3000/api/budgets`, {
+  
+  async function deleteBudget(id: number) {
+    const request = await fetch(`http://localhost:3000/api/budgets/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
 
     if (request.ok) {
@@ -124,7 +123,8 @@ export default function BudgetingDisplay({
         description: "Your budget could not be deleted.",
       });
     }
-  };
+  }
+  
 
   return (
     <>
@@ -132,7 +132,7 @@ export default function BudgetingDisplay({
       <Doughnut 
           className="max-w-2xl"
           data={{
-            labels: ['Housing', 'Food', 'Phone'],
+            labels: chartLabels,
             datasets: [
               {
                 
@@ -181,7 +181,10 @@ export default function BudgetingDisplay({
                     <Button
                       variant="outline"
                       className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row"
-                      onClick={() => handleButtonClick([budget.housing, budget.food, budget.phone])}
+                      onClick={() => {
+                        handleButtonClick([budget.housing, budget.food, budget.phone]);
+                        setChartLabels(['Housing', 'Food', 'Phone']);
+                      }}
                     >
                       {budget.name}
                       <Button
