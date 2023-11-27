@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
 import { ChevronRight } from "lucide-react";
+import { Minus } from "lucide-react";
 import {Doughnut} from 'react-chartjs-2';
 import { useState, useEffect } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -63,8 +64,7 @@ export default function BudgetingDisplay({
     resolver: zodResolver(FormSchema),
   });
 
-  const [chartData, setChartData] = useState( [0, 0, 0]);
-
+  const [chartData, setChartData] = useState([0, 0, 0]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const request = await fetch("http://localhost:3000/api/budgets", {
@@ -99,15 +99,38 @@ export default function BudgetingDisplay({
     }
   }
 
+
   const handleButtonClick = (budgetData:number[]) => {
     setChartData(budgetData);
   };
 
+  const deleteBudget = async (budgetId: number) => {
+    const request = await fetch(`http://localhost:3000/api/budgets`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (request.ok) {
+      refreshBudgets();
+      toast({
+        title: "Success!",
+        description: "Your budget has been deleted.",
+      });
+    } else {
+      toast({
+        title: "Oops!",
+        description: "Your budget could not be deleted.",
+      });
+    }
+  };
+
   return (
     <>
-      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center p-50" >
+      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center" >
       <Doughnut 
-          className="max-w-2xl aspect-square"
+          className="max-w-2xl"
           data={{
             labels: ['Housing', 'Food', 'Phone'],
             datasets: [
@@ -120,15 +143,33 @@ export default function BudgetingDisplay({
                   'rgb(255, 205, 86)',
                   'rgb(54, 162, 235)',
                 ],
-                hoverOffset: 35,
-                
+                hoverOffset: 100, 
               },
             ],
-
+          }}
+          options={{
+            layout: {
+              padding:{  
+                left: 100,  
+              } 
+            },
+            plugins: {
+              legend: {
+                position: 'right',// Change the position of the legends here (e.g., 'top', 'bottom', 'left')
+                labels:{
+                  padding: 50,
+                  usePointStyle: true,
+                  font: {
+                    size: 14,
+                    weight: 'bold',
+                  },
+                }, 
+              },
+            },
           }}
         />
-        <div className="flex flex-row space-x-6 mt-4"> {/* Add margin-top */}
-          <div className="flex flex-col text-white">
+        <div className="flex flex-row mx-auto mt-4 gap-x-20"> {/* Add margin-top */}
+          <div className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
             <span className="text-2xl font-medium">Saved budgets</span>
             <span>Click on any saved budget below to view and edit.</span>
             {budgets.length === 0 ? (
@@ -148,8 +189,9 @@ export default function BudgetingDisplay({
                         size="icon"
                         className="bg-slate-950 border-slate-950 hover:border-slate-800 hover:bg-slate-900 hover:text-white"
                         asChild
+                        onClick={() => deleteBudget(budget.id)}
                       >
-                        <ChevronRight className="h-6 w-6 ml-auto" />
+                        <Minus className="h-6 w-6 ml-auto" />
                       </Button>
                     </Button>
                     
@@ -165,7 +207,7 @@ export default function BudgetingDisplay({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="text-white grid grid-cols-2 gap-4 mt-8 max-w-2xl pb-6"
+              className="text-white grid grid-cols-1 gap-4 mt-8 max-w-2xl pb-6 overflow-auto max-h-96"
             >
               <FormField
                 control={form.control}
@@ -267,7 +309,7 @@ export default function BudgetingDisplay({
                   </FormItem>
                 )}
               />
-              <Button
+                <Button
                 variant="outline"
                 type="submit"
                 className="w-full mt-8 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white"
