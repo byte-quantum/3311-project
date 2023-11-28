@@ -20,9 +20,9 @@ import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
 import { ChevronRight } from "lucide-react";
 import { Minus } from "lucide-react";
-import {Doughnut} from 'react-chartjs-2';
-import { useState, useEffect } from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from "react-chartjs-2";
+import { useState, useEffect } from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { init } from "next/dist/compiled/webpack/webpack";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -67,13 +67,13 @@ export default function BudgetingDisplay({
   });
 
   const [chartData, setChartData] = useState([0, 0, 0]);
-  const [chartLabels, setChartLabels] = useState(['', '', '']);
+  const [chartLabels, setChartLabels] = useState(["", "", ""]);
   //Add a flag for submited
   const [submitted, setSubmitted] = useState(false);
   //Add a flag for chartData
   const [chartDataFlag, setChartDataFlag] = useState(false);
   //set title
-  const [title, setTitle] = useState(['']);
+  const [title, setTitle] = useState([""]);
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const request = await fetch("http://localhost:3000/api/budgets", {
       method: "POST",
@@ -90,13 +90,17 @@ export default function BudgetingDisplay({
       }),
     });
     if (request.ok) {
-      const newChartData = [Number(data.housing), Number(data.food), Number(data.phone)];
+      const newChartData = [
+        Number(data.housing),
+        Number(data.food),
+        Number(data.phone),
+      ];
       const newBudget = await request.json();
       setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
       refreshBudgets();
       setSubmitted(true);
       setChartData(newChartData);
-      setChartLabels(['Housing', 'Food', 'Phone']);
+      setChartLabels(["Housing", "Food", "Phone"]);
       setTitle([data.name]);
       sessionStorage.setItem("chartData", JSON.stringify(newChartData));
       toast({
@@ -111,17 +115,35 @@ export default function BudgetingDisplay({
     }
   }
 
-
-  const handleButtonClick = (budgetData:number[]) => {
+  const handleButtonClick = (budgetData: number[]) => {
     setChartData(budgetData);
   };
-  
+
+  const removeAndUpdateBudgetByID = (budgetIdToRemove: number) => {
+    // Use setBudgets to update the state based on the previous state
+    setBudgets((prevBudgets) => {
+      // Use filter to create a new array excluding the budget with the specified ID
+      const updatedBudgets = prevBudgets.filter(
+        (budget) => budget.id !== budgetIdToRemove
+      );
+
+      // Return the new array, and React will update the state with it
+      return updatedBudgets;
+    });
+  };
+
   async function deleteBudget(id: number) {
     const request = await fetch(`http://localhost:3000/api/budgets/${id}`, {
       method: "DELETE",
     });
-
+    console.log(request);
     if (request.ok) {
+      removeAndUpdateBudgetByID(id);
+      setChartData([0, 0, 0]);
+      setChartLabels(["", "", ""]);
+      setChartDataFlag(false);
+      setSubmitted(false);
+
       refreshBudgets();
       toast({
         title: "Success!",
@@ -134,68 +156,66 @@ export default function BudgetingDisplay({
       });
     }
   }
-  
 
   return (
     <>
-      <div className="w-[1045px] h-[677px] mx-auto flex flex-col items-center" >
-          <Doughnut 
-            className="max-w-2xl mx-y-2"
-            data={{
-              labels: chartLabels,
-              datasets: [
-                {
-                  label: 'Budget',
-                  data: chartData,
-                  backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 205, 86)',
-                    'rgb(54, 162, 235)',
-                  ],
-                  hoverOffset: 100,
-                },
-              ],
-            }}
-            options={{
-              layout: {
-                padding: {
-                  left: 100,
+      <div className="w-[1045px] h-[677px] mx-auto flex flex-col items-center">
+        <Doughnut
+          className="max-w-2xl mx-y-2"
+          data={{
+            labels: chartLabels,
+            datasets: [
+              {
+                label: "Budget",
+                data: chartData,
+                backgroundColor: [
+                  "rgb(255, 99, 132)",
+                  "rgb(255, 205, 86)",
+                  "rgb(54, 162, 235)",
+                ],
+                hoverOffset: 100,
+              },
+            ],
+          }}
+          options={{
+            layout: {
+              padding: {
+                left: 100,
+              },
+            },
+
+            plugins: {
+              title: {
+                display: true,
+                text: "HELLO",
+                color: "white",
+                align: "start",
+                font: {
+                  size: 14,
+                  weight: "bold",
                 },
               },
-              
-              plugins: {
-                title:{
-                  display:true,
-                  text: 'HELLO',
-                  color: 'white',
-                  align: 'start',
+              legend: {
+                display: submitted || chartDataFlag,
+                position: "right", // Change the position of the legends here (e.g., 'top', 'bottom', 'left')
+                labels: {
+                  padding: 50,
+                  usePointStyle: true,
                   font: {
                     size: 14,
-                    weight: 'bold',
-                    
-                    
-                  },
-  
-                },
-                legend: {
-                  display: submitted || chartDataFlag,
-                  position: 'right', // Change the position of the legends here (e.g., 'top', 'bottom', 'left')
-                  labels: {
-                    padding: 50,
-                    usePointStyle: true,
-                    font: {
-                      size: 14,
-                      weight: 'bold',
-                    },
+                    weight: "bold",
                   },
                 },
               },
-            }}
-          />
-        <div className="flex flex-row mx-auto mt-4 gap-x-20"> {/* Add margin-top */}
+            },
+          }}
+        />
+        <div className="flex flex-row mx-auto mt-4 gap-x-20">
+          {" "}
+          {/* Add margin-top */}
           <div className="flex flex-col w-90 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
             <span className="text-2xl font-medium">Saved budgets</span>
-            <span>lick to view.</span>
+            <span>Click to view.</span>
             {budgets.length === 0 ? (
               <p className="text-white mt-8">You have no saved budgets.</p>
             ) : (
@@ -206,8 +226,12 @@ export default function BudgetingDisplay({
                       variant="outline"
                       className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row focus:ring ring-white inset"
                       onClick={() => {
-                        handleButtonClick([budget.housing, budget.food, budget.phone]);
-                        setChartLabels(['Housing', 'Food', 'Phone']);
+                        handleButtonClick([
+                          budget.housing,
+                          budget.food,
+                          budget.phone,
+                        ]);
+                        setChartLabels(["Housing", "Food", "Phone"]);
                         setChartDataFlag(true);
                       }}
                     >
@@ -222,27 +246,21 @@ export default function BudgetingDisplay({
                         <Minus className="h-6 w-6 ml-auto" />
                       </Button>
                     </Button>
-                    
                   </div>
                 ))}
               </div>
             )}
-
-
-
-            
           </div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96 gap-y-2"
             >
-               <span className="text-2xl font-medium">Save budget</span>
+              <span className="text-2xl font-medium">Save budget</span>
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
@@ -327,7 +345,7 @@ export default function BudgetingDisplay({
                   </FormItem>
                 )}
               />
-                <Button
+              <Button
                 variant="outline"
                 type="submit"
                 className="w-full mt-8 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white"
