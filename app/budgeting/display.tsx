@@ -73,7 +73,7 @@ export default function BudgetingDisplay({
   //Add a flag for chartData
   const [chartDataFlag, setChartDataFlag] = useState(false);
   //set title
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(['']);
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const request = await fetch("http://localhost:3000/api/budgets", {
       method: "POST",
@@ -94,7 +94,7 @@ export default function BudgetingDisplay({
       setSubmitted(true);
       setChartData(newChartData);
       setChartLabels(['Housing', 'Food', 'Phone']);
-      setTitle(data.name);
+      setTitle([data.name]);
       sessionStorage.setItem("chartData", JSON.stringify(newChartData));
       refreshBudgets();
       toast({
@@ -136,9 +136,9 @@ export default function BudgetingDisplay({
 
   return (
     <>
-      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center" >
+      <div className="w-[1045px] h-[677px] mx-auto flex flex-col items-center" >
           <Doughnut 
-            className="max-w-2xl"
+            className="max-w-2xl mx-y-2"
             data={{
               labels: chartLabels,
               datasets: [
@@ -160,14 +160,17 @@ export default function BudgetingDisplay({
                   left: 100,
                 },
               },
+              
               plugins: {
                 title:{
                   display:true,
-                  text: title,
+                  text: 'HELLO',
                   color: 'white',
+                  align: 'start',
                   font: {
                     size: 14,
                     weight: 'bold',
+                    
                     
                   },
   
@@ -190,7 +193,7 @@ export default function BudgetingDisplay({
         <div className="flex flex-row mx-auto mt-4 gap-x-20"> {/* Add margin-top */}
           <div className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
             <span className="text-2xl font-medium">Saved budgets</span>
-            <span>Click on any saved budget below to view and edit.</span>
+            <span>lick to view.</span>
             {budgets.length === 0 ? (
               <p className="text-white mt-8">You have no saved budgets.</p>
             ) : (
@@ -230,12 +233,14 @@ export default function BudgetingDisplay({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="text-white grid grid-cols-1 gap-4 mt-8 max-w-2xl pb-6 overflow-auto max-h-96"
+              className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96 gap-y-2"
             >
+               <span className="text-2xl font-medium">Saved budgets</span>
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
+                  
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
@@ -245,9 +250,6 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is a name for your budget.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -265,9 +267,7 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly estimated income.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -285,9 +285,6 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly housing payment.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -305,9 +302,7 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly food budget.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -325,9 +320,7 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly phone budget.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
