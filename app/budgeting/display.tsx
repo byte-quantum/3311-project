@@ -91,12 +91,14 @@ export default function BudgetingDisplay({
     });
     if (request.ok) {
       const newChartData = [Number(data.housing), Number(data.food), Number(data.phone)];
+      const newBudget = await request.json();
+      setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
+      refreshBudgets();
       setSubmitted(true);
       setChartData(newChartData);
       setChartLabels(['Housing', 'Food', 'Phone']);
       setTitle([data.name]);
       sessionStorage.setItem("chartData", JSON.stringify(newChartData));
-      refreshBudgets();
       toast({
         title: "Success!",
         description: "Your budget has been saved.",
@@ -191,18 +193,18 @@ export default function BudgetingDisplay({
             }}
           />
         <div className="flex flex-row mx-auto mt-4 gap-x-20"> {/* Add margin-top */}
-          <div className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
+          <div className="flex flex-col w-90 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
             <span className="text-2xl font-medium">Saved budgets</span>
             <span>lick to view.</span>
             {budgets.length === 0 ? (
               <p className="text-white mt-8">You have no saved budgets.</p>
             ) : (
               <div className="mt-4 space-y-4">
-                {budgets.map((budget) => (
+                {[...budgets].reverse().map((budget) => (
                   <div key={budget.id}>
                     <Button
                       variant="outline"
-                      className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row"
+                      className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row focus:ring ring-white inset"
                       onClick={() => {
                         handleButtonClick([budget.housing, budget.food, budget.phone]);
                         setChartLabels(['Housing', 'Food', 'Phone']);
@@ -235,7 +237,7 @@ export default function BudgetingDisplay({
               onSubmit={form.handleSubmit(onSubmit)}
               className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96 gap-y-2"
             >
-               <span className="text-2xl font-medium">Saved budgets</span>
+               <span className="text-2xl font-medium">Save budget</span>
               <FormField
                 control={form.control}
                 name="name"
