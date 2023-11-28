@@ -12,6 +12,7 @@
   "repository": "https://github.com/plaid/quickstart",
   "license": "ISC",
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
     "body-parser": "1.18.x",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, PiggyBankIcon } from "lucide-react";
 import PlaidLinkButton from "@/services/Link";
+import * as Dialog from "@radix-ui/react-dialog";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import DisplayTransactions from "@/components/ui/transaction";
 
 export interface BankLogo {
@@ -78,6 +80,7 @@ const banks: Bank[] = [];
 
 export default function Home() {
   const [showTransactions, setShowTransactions] = useState(false);
+  const [getAccountID, setAccountID] = useState("");
   const [AccountsList, setAccounts] = useState<Account[]>(bank_accounts);
   const [bankList, setBanks] = useState<Bank[]>(banks);
   const handleExpand = (id: number) => {
@@ -93,6 +96,10 @@ export default function Home() {
       return bank;
     });
     setBanks(updateBankList);
+  };
+
+  const handleCloseModal = () => {
+    setShowTransactions(false);
   };
 
   useEffect(() => {
@@ -265,6 +272,7 @@ export default function Home() {
                                 className="cursor-pointer"
                                 onClick={() => {
                                   setShowTransactions(true);
+                                  setAccountID(account.account_id);
                                 }}
                               >
                                 View Transactions
@@ -284,6 +292,12 @@ export default function Home() {
           ))
         )}
       </section>
+      {showTransactions && (
+        <DisplayTransactions
+          account={getAccountID}
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 }
