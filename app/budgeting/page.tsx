@@ -3,7 +3,7 @@ import { getUserSession } from "@/lib/auth";
 
 async function getBudgets(userId: string): Promise<Budget[]> {
   const request = await fetch(
-    `http://3311-project.vercel.app/api/budgets/${userId}`,
+    ` http://localhost:3000/api/budgets/${userId}`,
     {
       cache: "no-store",
     }

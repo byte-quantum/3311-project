@@ -2,9 +2,10 @@
 import chart from "@/public/doughnut_chart.png";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+
 import {
   Form,
   FormControl,
@@ -18,6 +19,13 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
 import { ChevronRight } from "lucide-react";
+import { Minus } from "lucide-react";
+import { Doughnut } from "react-chartjs-2";
+import { useState, useEffect } from "react";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { init } from "next/dist/compiled/webpack/webpack";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export interface Budget {
   id: number;
@@ -48,17 +56,26 @@ const FormSchema = z.object({
 
 export default function BudgetingDisplay({
   userId,
-  budgets,
+  budgets: initBudgets,
 }: {
   userId: string;
   budgets: Budget[];
 }) {
+  const [budgets, setBudgets] = useState<Budget[]>(initBudgets);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
+  const [chartData, setChartData] = useState([0, 0, 0]);
+  const [chartLabels, setChartLabels] = useState(["", "", ""]);
+  //Add a flag for submited
+  const [submitted, setSubmitted] = useState(false);
+  //Add a flag for chartData
+  const [chartDataFlag, setChartDataFlag] = useState(false);
+  //set title
+  const [title, setTitle] = useState([""]);
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const request = await fetch("https://3311-project.vercel.app/api/budgets", {
+    const request = await fetch("http://localhost:3000/api/budgets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,9 +89,20 @@ export default function BudgetingDisplay({
         userId: userId,
       }),
     });
-
     if (request.ok) {
+      const newChartData = [
+        Number(data.housing),
+        Number(data.food),
+        Number(data.phone),
+      ];
+      const newBudget = await request.json();
+      setBudgets((prevBudgets) => [...prevBudgets, newBudget]);
       refreshBudgets();
+      setSubmitted(true);
+      setChartData(newChartData);
+      setChartLabels(["Housing", "Food", "Phone"]);
+      setTitle([data.name]);
+      sessionStorage.setItem("chartData", JSON.stringify(newChartData));
       toast({
         title: "Success!",
         description: "Your budget has been saved.",
@@ -87,24 +115,125 @@ export default function BudgetingDisplay({
     }
   }
 
+  const handleButtonClick = (budgetData: number[]) => {
+    setChartData(budgetData);
+  };
+
+  const removeAndUpdateBudgetByID = (budgetIdToRemove: number) => {
+    // Use setBudgets to update the state based on the previous state
+    setBudgets((prevBudgets) => {
+      // Use filter to create a new array excluding the budget with the specified ID
+      const updatedBudgets = prevBudgets.filter(
+        (budget) => budget.id !== budgetIdToRemove
+      );
+
+      // Return the new array, and React will update the state with it
+      return updatedBudgets;
+    });
+  };
+
+  async function deleteBudget(id: number) {
+    const request = await fetch(`http://localhost:3000/api/budgets/${id}`, {
+      method: "DELETE",
+    });
+    console.log(request);
+    if (request.ok) {
+      removeAndUpdateBudgetByID(id);
+      setChartData([0, 0, 0]);
+      setChartLabels(["", "", ""]);
+      setChartDataFlag(false);
+      setSubmitted(false);
+
+      refreshBudgets();
+      toast({
+        title: "Success!",
+        description: "Your budget has been deleted.",
+      });
+    } else {
+      toast({
+        title: "Oops!",
+        description: "Your budget could not be deleted.",
+      });
+    }
+  }
+
   return (
     <>
-      <div className="max-w-4xl mx-auto flex flex-col items-center justify-center">
-        <Image src={chart} alt="Chart" width={400} height={400} />
+      <div className="w-[1045px] h-[677px] mx-auto flex flex-col items-center">
+        <Doughnut
+          className="max-w-2xl mx-y-2"
+          data={{
+            labels: chartLabels,
+            datasets: [
+              {
+                label: "Budget",
+                data: chartData,
+                backgroundColor: [
+                  "rgb(255, 99, 132)",
+                  "rgb(255, 205, 86)",
+                  "rgb(54, 162, 235)",
+                ],
+                hoverOffset: 100,
+              },
+            ],
+          }}
+          options={{
+            layout: {
+              padding: {
+                left: 100,
+              },
+            },
 
-        <div className="flex flex-row space-x-6">
-          <div className="flex flex-col text-white">
+            plugins: {
+              title: {
+                display: true,
+                text: "HELLO",
+                color: "white",
+                align: "start",
+                font: {
+                  size: 14,
+                  weight: "bold",
+                },
+              },
+              legend: {
+                display: submitted || chartDataFlag,
+                position: "right", // Change the position of the legends here (e.g., 'top', 'bottom', 'left')
+                labels: {
+                  padding: 50,
+                  usePointStyle: true,
+                  font: {
+                    size: 14,
+                    weight: "bold",
+                  },
+                },
+              },
+            },
+          }}
+        />
+        <div className="flex flex-row mx-auto mt-4 gap-x-20">
+          {" "}
+          {/* Add margin-top */}
+          <div className="flex flex-col w-90 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96">
             <span className="text-2xl font-medium">Saved budgets</span>
-            <span>Click on any saved budget below to view and edit.</span>
+            <span>Click to view.</span>
             {budgets.length === 0 ? (
               <p className="text-white mt-8">You have no saved budgets.</p>
             ) : (
               <div className="mt-4 space-y-4">
-                {budgets.map((budget) => (
+                {[...budgets].reverse().map((budget) => (
                   <div key={budget.id}>
                     <Button
                       variant="outline"
-                      className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row"
+                      className="w-64 bg-slate-950 border-slate-900 hover:border-slate-800 hover:bg-slate-950 hover:text-white flex flex-row focus:ring ring-white inset"
+                      onClick={() => {
+                        handleButtonClick([
+                          budget.housing,
+                          budget.food,
+                          budget.phone,
+                        ]);
+                        setChartLabels(["Housing", "Food", "Phone"]);
+                        setChartDataFlag(true);
+                      }}
                     >
                       {budget.name}
                       <Button
@@ -112,8 +241,9 @@ export default function BudgetingDisplay({
                         size="icon"
                         className="bg-slate-950 border-slate-950 hover:border-slate-800 hover:bg-slate-900 hover:text-white"
                         asChild
+                        onClick={() => deleteBudget(budget.id)}
                       >
-                        <ChevronRight className="h-6 w-6 ml-auto" />
+                        <Minus className="h-6 w-6 ml-auto" />
                       </Button>
                     </Button>
                   </div>
@@ -124,8 +254,9 @@ export default function BudgetingDisplay({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="text-white grid grid-cols-2 gap-4 mt-8 max-w-2xl pb-6"
+              className="flex flex-col w-64 text-white overflow-padding-5 overflow-x-hidden overflow-y-scroll max-h-96 gap-y-2"
             >
+              <span className="text-2xl font-medium">Save budget</span>
               <FormField
                 control={form.control}
                 name="name"
@@ -139,9 +270,6 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is a name for your budget.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -159,9 +287,7 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly estimated income.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -179,9 +305,6 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly housing payment.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -199,9 +322,7 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly food budget.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -219,9 +340,7 @@ export default function BudgetingDisplay({
                         className="text-black"
                       />
                     </FormControl>
-                    <FormDescription>
-                      This is your monthly phone budget.
-                    </FormDescription>
+
                     <FormMessage />
                   </FormItem>
                 )}

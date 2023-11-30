@@ -14,3 +14,24 @@ export async function GET(
   });
   return NextResponse.json(entry);
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const id = params.id;
+
+
+
+  try {
+    await prisma.budget.deleteMany({
+      where: {
+        id: id,
+      },
+    });
+
+    return NextResponse.json({ success: true, message: 'Budget deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting budgets:', error);
+  }
+}

@@ -57,7 +57,7 @@ export default function SignupPage() {
     setTimeout(async () => {
       try {
         const request = await fetch(
-          "https://3311-project.vercel.app/api/user",
+          " http://localhost:3000/api/user",
           {
             method: "POST",
             headers: {
