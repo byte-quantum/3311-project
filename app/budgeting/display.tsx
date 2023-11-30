@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { refreshBudgets } from "./refresh";
 import { ChevronRight } from "lucide-react";
+import { hash } from "bcrypt";
 
 export interface Budget {
   id: number;
@@ -58,17 +59,23 @@ export default function BudgetingDisplay({
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const hashedName = await hash(data.name, 10);
+    const hashedIncome = await hash(data.income, 10);
+    const hashedHousing = await hash(data.housing, 10);
+    const hashedFood = await hash(data.food, 10);
+    const hashedPhone = await hash(data.phone, 10);
+
     const request = await fetch("https://3311-project.vercel.app/api/budgets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: data.name,
-        income: data.income,
-        housing: data.housing,
-        food: data.food,
-        phone: data.phone,
+        name: hashedName,
+        income: hashedIncome,
+        housing: hashedHousing,
+        food: hashedFood,
+        phone: hashedPhone,
         userId: userId,
       }),
     });
@@ -77,7 +84,7 @@ export default function BudgetingDisplay({
       refreshBudgets();
       toast({
         title: "Success!",
-        description: "Your budget has been saved.",
+        description: `${data.name} has been saved.}`,
       });
     } else {
       toast({
