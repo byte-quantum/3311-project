@@ -1,11 +1,9 @@
 "use client";
 import Image from "next/image";
-import chase_svg from "@/public/chase-color.svg";
-import robinhood_svg from "@/public/robinhood-color.svg";
 import { ChevronDownIcon, ScaleIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import { cn, formatMoneyUSD } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { usePlaidLink } from "react-plaid-link";
 
 export interface Bank {
   id: number;
@@ -79,6 +78,39 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [progress]);
 
+  // Plaid
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const createLinkToken = async () => {
+      const response = await fetch(
+        "https://3311-project.vercel.app/api/create-link-token",
+        {
+          method: "POST",
+        }
+      );
+      const { link_token } = await response.json();
+      setToken(link_token);
+    };
+    createLinkToken();
+  }, []);
+
+  const onSuccess = useCallback(async (publicToken: any) => {
+    await fetch("https://3311-project.vercel.app/api/exchange-public-token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ public_token: publicToken }),
+    });
+    //Router.push("/dash");
+  }, []);
+
+  const { open, ready } = usePlaidLink({
+    token,
+    onSuccess,
+  });
+
   return (
     <>
       <section className="w-full max-w-6xl bg-green-700 rounded-2xl text-white mx-auto h-52 flex flex-col p-4">
@@ -97,8 +129,9 @@ export default function Home() {
         </div>
         <div className="flex-grow" />
         <div className="ml-auto">
-          <Button>Link Account</Button>
-          {/* TODO: Add plaid popup here */}
+          <Button onClick={() => open()} disabled={!ready}>
+            Link Account
+          </Button>
         </div>
       </section>
 
